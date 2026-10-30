@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="uz-Cyrl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Хавфсиз тадбир — периметр калькулятори</title>
+<meta name="description" content="Тадбир ҳудуди периметрини харитада чизиб, майдон ва хизматга жалб этиладиган ходимлар сонини автоматик ҳисоблаш">
+<script>try{var t=JSON.parse(localStorage.getItem('hx.theme')||'null');document.documentElement.setAttribute('data-theme',t||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'))}catch(e){document.documentElement.setAttribute('data-theme','dark')}</script>
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/milliy-gvardiya.png">
+<meta name="theme-color" content="#7d0e0e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/i18n-dict.js"></script>
+<script>HXI18N.start()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/skin.css">
+<style>
+  body { overflow: hidden; }
+  .calc-layout { display: grid; grid-template-columns: 390px minmax(0, 1fr); height: calc(100vh - 68px); position: relative; z-index: 1; }
+  .calc-side { overflow-y: auto; border-right: 1px solid var(--line); background: var(--bg-2); padding: 18px 18px 30px; display: flex; flex-direction: column; gap: 14px; }
+  .calc-map { position: relative; }
+  #bigMap { position: absolute; inset: 0; }
+  .side-sec { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 14px; animation: fadeUp .5s var(--ease) both; }
+  .side-sec h4 { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 10px; }
+  .side-sec h4 svg { width: 17px; height: 17px; color: var(--accent); }
+  .tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .tools .btn { justify-content: flex-start; }
+  .tools .wide { grid-column: span 2; justify-content: center; }
+  .mini-f { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .mini-f .field label { font-size: 11.5px; }
+  .mini-f .input { padding: 8px 10px; font-size: 13.5px; }
+  .chips-f { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips-f button { font: 600 12px var(--font); padding: 6px 10px; border-radius: 20px; border: 1px solid var(--line-strong); background: var(--surface-2); color: var(--text-2); cursor: pointer; transition: all .2s; }
+  .chips-f button.on { background: var(--accent-soft); border-color: var(--accent); color: var(--text); }
+  .hud { position: absolute; top: 14px; left: 56px; z-index: 500; display: flex; gap: 10px; flex-wrap: wrap; pointer-events: none; }
+  .hud .h { background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--line-strong); border-radius: 14px; padding: 10px 14px; box-shadow: var(--shadow); min-width: 120px; }
+  .hud .h span { display: block; font-size: 11px; color: var(--muted); font-weight: 650; text-transform: uppercase; letter-spacing: .06em; }
+  .hud .h b { font-family: var(--font-display); font-size: 24px; font-variant-numeric: tabular-nums; }
+  .hud .h.total b { color: var(--accent); font-size: 30px; }
+  .map-foot { position: absolute; left: 14px; right: 14px; bottom: 22px; z-index: 500; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; pointer-events: none; }
+  .map-foot > * { pointer-events: auto; }
+  .legend-box { background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--line-strong); border-radius: 14px; padding: 10px 14px; box-shadow: var(--shadow); }
+  .legend-box button { display: inline-flex; align-items: center; gap: 7px; border: 0; background: none; color: var(--text-2); font: 600 12.5px var(--font); padding: 4px 6px; border-radius: 8px; cursor: pointer; }
+  .legend-box button.off { opacity: .4; text-decoration: line-through; }
+  .legend-box button:hover { background: var(--surface-2); }
+  .draw-banner { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); z-index: 600; background: var(--accent); color: var(--accent-ink); padding: 10px 16px; border-radius: 30px; font-weight: 700; font-size: 13.5px; box-shadow: var(--shadow); display: none; align-items: center; gap: 8px; animation: popIn .3s var(--ease); white-space: nowrap; }
+  .draw-banner.on { display: flex; }
+  .draw-banner svg { width: 16px; height: 16px; }
+  .empty-map { position: absolute; inset: 0; z-index: 450; display: grid; place-items: center; pointer-events: none; }
+  #typeGate { pointer-events: auto; background: color-mix(in srgb, var(--bg) 42%, transparent); align-items: start; padding: 18px 12px; overflow: auto; }
+  .empty-map .box { background: var(--glass); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--line-strong); border-radius: 18px; padding: 22px 26px; text-align: center; max-width: 360px; box-shadow: var(--shadow); pointer-events: auto; animation: popIn .5s var(--ease); }
+  .empty-map .box.type-gate { max-width: 560px; text-align: left; max-height: none; }
+  .type-opt { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; text-align: left; margin: 0 0 6px; }
+  .type-opt.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .type-opt b { display: block; font-size: 13.5px; }
+  .type-opt span { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  .empty-map svg.ani { width: 64px; height: 64px; color: var(--accent); }
+  .empty-map svg.ani path { stroke-dasharray: 120; stroke-dashoffset: 120; animation: dash 2s var(--ease) infinite alternate; }
+  .res-total { display: flex; align-items: baseline; gap: 8px; }
+  .res-total b { font-family: var(--font-display); font-size: 48px; font-weight: 800; color: var(--accent); line-height: 1; font-variant-numeric: tabular-nums; }
+  .obj-card { display: flex; gap: 12px; align-items: center; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface)); }
+  .obj-card.hidden { display: none; }
+  .obj-illu { flex: none; width: 108px; }
+  .obj-illu svg { width: 100%; height: auto; filter: drop-shadow(0 8px 10px rgba(0,0,0,.18)); animation: float 4.5s ease-in-out infinite; }
+  .empty-map svg.scene { width: min(280px, 80vw); height: auto; margin-bottom: 4px; }
+  .empty-map svg.scene .walker { stroke-dasharray: 10 12; animation: marching 1s linear infinite; }
+  #mapStatus { display: none; font-weight: 750; }
+  #mapStatus.on { display: block; animation: popIn .35s var(--ease); }
+  .is-picking, .is-picking .leaflet-container { cursor: crosshair; }
+  .is-drawing path.yx-obj, .is-gating path.yx-obj { pointer-events: none !important; }
+  @media (max-width: 900px) {
+    body { overflow: hidden; }
+    .calc-layout { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(230px, 1.15fr) minmax(0, 1fr); height: calc(100vh - 68px); height: calc(100dvh - 68px); }
+    .calc-map { height: 100%; min-height: 230px; order: -1; }
+    .calc-side { border-right: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .draw-banner { top: auto; bottom: 56px; left: 10px; right: 10px; transform: none; white-space: normal; text-align: center; max-width: none; font-size: 12.5px; }
+    .calc-map .leaflet-top { top: 58px; }
+    .tools .btn { white-space: normal; line-height: 1.25; text-align: left; }
+    .empty-map .box { max-width: min(360px, calc(100vw - 32px)); padding: 16px; }
+  }
+  @media (max-width: 820px) {
+    body { padding-bottom: 0 !important; }
+    .calc-layout { height: calc(100vh - 60px - 72px - env(safe-area-inset-bottom)); height: calc(100dvh - 60px - 72px - env(safe-area-inset-bottom)); }
+  }
+</style>
+</head>
+<body>
+<header id="app-header"></header>
+<main class="calc-layout">
+  <aside class="calc-side" id="side">
+    <div class="side-sec" style="background:transparent;border:0;padding:0 2px">
+      <div class="eyebrow">Интерактив харита</div>
+      <h2 style="font-size:24px;margin-bottom:6px">Периметр калькулятори</h2>
+      <p class="small" style="margin:0">Майдонни қўлда чизинг — периметр, ўртача сиғим ва ходимлар сони дарҳол ҳисобланади. Савдо мажмуи ва бозорда фақат ички патрул, марафонда эса чизиқ бўйлаб фақат пост патрули қўйилади. Периметр аниқлангач НЎП ва патруль постлари ўзлари қўйилади, кейин уларни суриб ўз жойингизга қўйинг.</p>
+    </div>
+
+    <div class="side-sec" style="animation-delay:.05s">
+      <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>Жойлашув</h4>
+      <select class="input" id="region" aria-label="Ҳудуд"></select>
+    </div>
+
+    <div class="side-sec" style="animation-delay:.1s">
+      <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7z"/><path d="M18 13l-1.5-7.5L2 2l3.6 14.5L13 18z"/></svg>Чизиш асбоблари</h4>
+      <div class="tools">
+        <button class="btn btn-primary btn-sm wide" id="tDraw">Қўлда чизиш</button>
+        <button class="btn btn-sm" id="tUndo" disabled>Бекор қилиш</button>
+        <button class="btn btn-sm" id="tDone" disabled>Якунлаш</button>
+        <button class="btn btn-sm" id="tSample">Намуна ҳудуд</button>
+        <button class="btn btn-sm" id="tClear">Тозалаш</button>
+      </div>
+      <p class="small muted" style="margin:10px 0 0" id="tHint">«Қўлда чизиш»ни босинг ва ҳудуд чегарасини нуқталар билан белгиланг. Нуқталарни суриш ва ўнг тугма билан ўчириш мумкин.</p>
+    </div>
+
+    <div class="side-sec" id="nupSec" style="animation-delay:.12s">
+      <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 21V4h14v17M9 21V8h6v13M3 21h18"/></svg>НЎП — кириш нуқталари</h4>
+      <div class="tools">
+        <button class="btn btn-sm wide" id="gMode">НЎПни харитада белгилаш</button>
+        <button class="btn btn-sm" id="gAuto">Йўллар бўйича</button>
+        <button class="btn btn-sm" id="gClear">НЎПни тозалаш</button>
+      </div>
+      <p class="small muted" style="margin:10px 0 0" id="gHint">Периметр аниқлангач НЎП чорраҳага, патруль постлари кўриш масофаси бўйича қўйилади. Кейин иккаласини ҳам бармоқ ёки сичқонча билан суринг. «Йўллар бўйича» жойлашувни қайта ҳисоблайди.</p>
+    </div>
+
+    <div class="side-sec obj-card hidden" id="objCard" style="animation-delay:.12s">
+      <div class="obj-illu" aria-hidden="true">
+        <svg viewBox="0 0 120 72" fill="none"><rect x="8" y="28" width="28" height="36" rx="3" fill="#1a56d6"/><rect x="14" y="34" width="6" height="8" rx="1" fill="#fff"/><rect x="24" y="34" width="6" height="8" rx="1" fill="#fff"/><rect x="14" y="48" width="6" height="8" rx="1" fill="#fff"/><rect x="24" y="48" width="6" height="8" rx="1" fill="#fff"/><path d="M44 64V22l16-10 16 10v42H44z" fill="#d0122d"/><circle cx="60" cy="40" r="6" fill="#fff"/><rect x="80" y="36" width="32" height="28" rx="3" fill="#0f9f6e"/><path d="M84 36c6-10 18-10 24 0" stroke="#0f9f6e" stroke-width="4"/><circle cx="96" cy="28" r="4" fill="#f5c542"/></svg>
+      </div>
+      <div><div class="eyebrow" id="objKind">Объект</div><h3 id="objName" style="margin:2px 0 4px;font-size:18px">—</h3><p class="small" id="objMeta" style="margin:0">Периметр ва кўрсаткичлар объект белгилангач ҳисобланади.</p></div>
+    </div>
+
+    <div class="side-sec" style="animation-delay:.15s">
+      <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5"/></svg>Тадбир параметрлари</h4>
+      <div class="mini-f">
+        <div class="field" style="grid-column:span 2"><label for="pType">Тадбир тури</label><select class="input" id="pType"></select></div>
+        <div class="field" style="grid-column:span 2"><label for="pVenue">Объект тури</label><select class="input" id="pVenue"></select></div>
+        <div class="field"><label for="pCat">Тоифа</label><select class="input" id="pCat"></select></div>
+        <div class="field"><label for="pEnt">Кириш нуқталари</label><input class="input" id="pEnt" type="number" min="1" max="60" value="3"></div>
+        <div class="field"><label for="pStart">Бошланиш</label><input class="input" id="pStart" type="time" value="18:00"></div>
+        <div class="field"><label for="pDur">Давомийлик, соат</label><input class="input" id="pDur" type="number" min="1" max="72" value="4"></div>
+        <div class="field" style="grid-column:span 2"><label>Иштирокчилар тартиби</label><div class="seg" id="pCrowd"><button type="button" data-c="limited">Чекланган</button><button type="button" data-c="open">Чекланмаган</button></div></div>
+        <div class="field" style="grid-column:span 2"><label for="pAtt" id="pAttL">Чекланган иштирокчилар сони</label><input class="input" id="pAtt" type="number" min="0" placeholder="Аниқ сон"></div>
+      </div>
+      <div class="label" style="margin:12px 0 6px">Хавф омиллари</div>
+      <div class="chips-f" id="pFactors"></div>
+    </div>
+
+    <div class="side-sec" id="termSec" style="animation-delay:.18s">
+      <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Шартнома муддати</h4>
+      <p class="small muted" style="margin:0 0 10px">Бир марталик тадбир ёки санадан санагача муддатли шартнома.</p>
+      <div class="seg" id="termKind" style="margin-bottom:10px">
+        <button type="button" data-k="event">Бир марталик</button>
+        <button type="button" data-k="period">Муддатли</button>
+      </div>
+      <div id="termPeriod" class="hidden">
+        <div class="grid-2">
+          <div class="field"><label for="termFrom">Бошланиш (кун.ой.йил)</label><input class="input" id="termFrom" type="date"></div>
+          <div class="field"><label for="termTo">Тугаш (кун.ой.йил)</label><input class="input" id="termTo" type="date"></div>
+        </div>
+      </div>
+      <p class="small" id="termNote" style="margin:10px 0 0"></p>
+    </div>
+
+    <div class="side-sec card glow" style="animation-delay:.2s" id="resSec">
+      <div class="card-head" style="margin-bottom:8px"><h4 style="margin:0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/></svg>Натижа</h4><span id="rRisk"></span></div>
+      <div class="res-total"><b id="rTotal">0</b><span class="muted">нафар ходим</span></div>
+      <div class="small muted" id="rSub" style="margin:4px 0 12px">Ҳудуд белгиланмаган</div>
+      <div class="bars" id="rBars"></div>
+      <dl class="kv" style="margin-top:14px;font-size:13px" id="rKv"></dl>
+      <div class="warn-list" id="rWarn" style="margin-top:10px"></div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+        <button class="btn" id="rDeploy" disabled>Кучларни жойлаштириш анимацияси</button>
+        <a class="btn btn-primary" id="rApply" href="kabinet.html#new">Шу ҳисоб билан ариза бериш →</a>
+      </div>
+    </div>
+
+    <details class="side-sec" style="animation-delay:.25s" id="zonesSec">
+      <summary style="cursor:pointer;font-weight:700;display:flex;align-items:center;gap:8px"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/></svg>Жойлаштириш тамойиллари (схема)</summary>
+      <div id="zones" style="margin-top:12px;display:flex;flex-direction:column;gap:12px"></div>
+    </details>
+  </aside>
+
+  <section class="calc-map">
+    <div id="bigMap"></div>
+    <div class="hud" id="hud">
+      <div class="h"><span id="hPl">Периметр</span><b id="hP">0</b> <span id="hPu">м</span></div>
+      <div class="h"><span id="hSl">Майдон</span><b id="hS">0</b> <span id="hSu">м²</span></div>
+      <div class="h"><span>Ўртача сиғим</span><b id="hC">0</b></div>
+      <div class="h total"><span>Ходимлар</span><b id="hN">0</b></div>
+    </div>
+    <div class="draw-banner" id="drawBanner"></div>
+    <div class="empty-map" id="typeGate"><div class="box type-gate">
+      <div class="eyebrow">Тадбир</div>
+      <h3 style="margin:4px 0 6px">Тадбир турини танланг</h3>
+      <p class="small" style="margin:0 0 12px">Чизишдан олдин тур аниқланади. Ҳар бир турнинг битта ишлаш режими бор. «Бошқа турдаги тадбир»да режимни ўзингиз танлайсиз.</p>
+      <div id="typePick"></div>
+      <div id="modePick" class="hidden" style="margin-top:8px"></div>
+      <button class="btn btn-primary wide" id="typeOk" type="button" disabled style="margin-top:12px">Давом этиш</button>
+    </div></div>
+    <div class="empty-map hidden" id="emptyMap"><div class="box">
+      <svg class="scene" viewBox="0 0 220 110" aria-hidden="true">
+        <rect x="8" y="58" width="46" height="44" rx="4" fill="#1a56d6"/><rect x="16" y="66" width="10" height="12" fill="#fff" opacity=".9"/><rect x="32" y="66" width="10" height="12" fill="#fff" opacity=".9"/><rect x="16" y="84" width="10" height="12" fill="#fff" opacity=".9"/>
+        <path d="M70 102V34l28-16 28 16v68H70z" fill="#d0122d"/><circle cx="98" cy="62" r="10" fill="#fff"/><path d="M93 62h10M98 57v10" stroke="#d0122d" stroke-width="2"/>
+        <rect x="138" y="64" width="70" height="38" rx="6" fill="#0f9f6e"/><path d="M146 64c10-16 28-16 40 0" stroke="#0b7d56" stroke-width="6" fill="none"/><circle cx="188" cy="52" r="7" fill="#f5c542"/>
+        <path d="M20 102h180" stroke="#8aa0b8" stroke-width="3"/><path class="walker" d="M40 96c18-8 28 8 48 0s30 8 48 0 32-8 52 0" stroke="#f5c542" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <h3 style="margin:8px 0 6px">Ҳудудни чизинг</h3>
+      <p class="small" style="margin-bottom:14px">«Қўлда чизиш»ни босинг ва ҳудуд чегарасини нуқталар билан белгиланг.</p>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"><button class="btn btn-primary btn-sm" id="eDraw">Қўлда чизиш</button><button class="btn btn-sm" id="eSample">Намуна</button></div>
+    </div></div>
+    <div class="map-foot"><div class="legend-box map-live" id="mapStatus"></div><button class="btn btn-sm legend-toggle" id="lgToggle" type="button">Легенда</button><div class="legend-box map-legend" id="legend"></div></div>
+  </section>
+</main>
+<div id="app-footer" class="hidden"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/calc.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/remote.js"></script>
+<script src="assets/js/geo.js"></script>
+<script src="assets/js/illustrations.js"></script>
+<script src="assets/js/xarita.js"></script>
+</body>
+</html>

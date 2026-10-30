@@ -1,0 +1,8 @@
+{
+  "name": "xavfsiz-tadbir",
+  "private": true,
+  "description": "Xavfsiz tadbir",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2"
+  }
+}

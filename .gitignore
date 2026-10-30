@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.*
+.vercel
+*.log
+_preview.js
+.neon-create.json

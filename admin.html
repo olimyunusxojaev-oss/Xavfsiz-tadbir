@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="uz-Cyrl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Хавфсиз тадбир — админ платформаси</title>
+<meta name="description" content="Миллий гвардия ходимлари учун мониторинг, аризаларни кўриб чиқиш, шартномалар ва ҳудудий органларга юбориш">
+<script>try{var t=JSON.parse(localStorage.getItem('hx.theme')||'null');document.documentElement.setAttribute('data-theme',t||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'))}catch(e){document.documentElement.setAttribute('data-theme','dark')}</script>
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/milliy-gvardiya.png">
+<meta name="theme-color" content="#7d0e0e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/i18n-dict.js"></script>
+<script>HXI18N.start()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/skin.css">
+<style>
+  .ops-bar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; padding: 26px 0 18px; }
+  .ops-bar h1 { font-size: clamp(24px, 3vw, 34px); margin: 0; }
+  .role { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text-2); margin-bottom: 8px; }
+  .clock { font-family: var(--font-display); font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
+  @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .row2 { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 18px; margin-bottom: 18px; }
+  .row3 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 18px; margin-bottom: 18px; }
+  @media (max-width: 1100px) { .row2, .row3 { grid-template-columns: minmax(0, 1fr); } }
+  #opsMap { height: 430px; }
+  .feed { display: flex; flex-direction: column; max-height: 430px; overflow: auto; }
+  @media (max-width: 700px) { #opsMap { height: 300px; } .feed { max-height: 300px; } }
+  .feed-item { display: flex; gap: 10px; padding: 11px 4px; border-bottom: 1px solid var(--line); font-size: 13px; animation: feedIn .6s var(--ease) both; cursor: pointer; }
+  .feed-item:hover { background: var(--surface-2); }
+  .feed-item .t { font-family: var(--font-display); font-size: 12px; color: var(--muted); width: 44px; flex: none; padding-top: 2px; font-variant-numeric: tabular-nums; }
+  .feed-item .d { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex: none; }
+  .feed-item b { color: var(--text); }
+  @keyframes feedIn { from { opacity: 0; transform: translateX(-16px); background: var(--accent-soft); } to { opacity: 1; transform: none; } }
+  .pipeline { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px; }
+  @media (max-width: 1000px) { .pipeline { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pipe { border-radius: 12px; padding: 12px; border: 1px solid; cursor: pointer; transition: transform .2s var(--ease); }
+  .pipe:hover { transform: translateY(-2px); }
+  .pipe.on { box-shadow: 0 0 0 2px currentColor inset; }
+  .pipe span { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; }
+  .pipe span svg { width: 13px; height: 13px; }
+  .pipe b { font-family: var(--font-display); font-size: 26px; color: var(--text); display: block; margin-top: 4px; }
+  .vchart { position: relative; width: 100%; }
+  .vchart svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .vchart .grid line { stroke: var(--line); stroke-width: 1; }
+  .vchart .axis text { fill: var(--muted); font: 500 11px var(--font); }
+  .vchart .bar { fill: var(--s1); transform-box: fill-box; transform-origin: 50% 100%; animation: growY .8s var(--ease) both; }
+  .vchart .hit { fill: transparent; cursor: pointer; }
+  .vchart .hit:hover + .bar, .vchart .col:hover .bar { filter: brightness(1.2); }
+  .vchart .ref { stroke: var(--text-2); stroke-width: 1.5; stroke-dasharray: 5 5; }
+  .vchart .ref-l { fill: var(--text-2); font: 600 11px var(--font); }
+  .vchart .warn-ic { fill: var(--serious); font: 700 12px var(--font); }
+  @keyframes growY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+  .hbars { display: flex; flex-direction: column; gap: 9px; }
+  .hb { display: grid; grid-template-columns: 150px 1fr 60px; gap: 10px; align-items: center; font-size: 13px; color: var(--text-2); }
+  .hb .tr { height: 12px; background: var(--surface-3); border-radius: 0 4px 4px 0; overflow: hidden; }
+  .hb .fl { height: 100%; border-radius: 0 4px 4px 0; background: var(--s1); width: 0; transition: width 1s var(--ease); }
+  .hb b { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+  .hb span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meter { height: 12px; border-radius: 6px; background: var(--surface-3); overflow: hidden; }
+  .meter i { display: block; height: 100%; border-radius: 6px; width: 0; transition: width 1s var(--ease); }
+  .norms-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @media (max-width: 700px) { .norms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .chart-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-2); margin-top: 8px; }
+  .chart-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .chart-legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .chart-legend i.ln { height: 0; border-top: 2px dashed var(--text-2); border-radius: 0; width: 18px; }
+  .gate { max-width: 520px; margin: 48px auto 80px; }
+  .gate h1 { margin: 6px 0 8px; }
+  .gate .field { margin-bottom: 12px; }
+  .q-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  #contracts, #reestr { scroll-margin-top: 84px; }
+  .reg-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .reg-form { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body data-platform="admin">
+<header id="app-header"></header>
+
+<section id="adminGate" class="container">
+  <div class="card gate">
+    <div class="org-id"><span class="emb"><img src="assets/img/milliy-gvardiya.png" alt=""></span><span class="txt"><small>Админ платформаси</small><b>Миллий гвардия ходими</b></span></div>
+    <h1>Ходим кириши</h1>
+    <p>Марказий аппарат мижоз ва ижрочиларни қўшади ҳамда шартнома юборади. Вилоят ижрочиси ўз ҳудудининг шахсий кабинетига киради.</p>
+    <div class="field"><label for="admLogin">Логин</label><input class="input" id="admLogin" autocomplete="username" placeholder="tsh"></div>
+    <div class="field"><label for="admPass">Парол</label><input class="input" id="admPass" type="password" autocomplete="current-password" placeholder="парол"></div>
+    <button class="btn btn-primary" id="admIn" type="button">Кириш</button>
+    <p class="small muted" style="margin:14px 0 0">Демо парол: <b>mg2026</b>. Марказ — логин <b>markaz</b>. Ҳудуд — логин вилоят коди: <b>tsh</b>, <b>sam</b>, <b>and</b>, <b>bux</b>, <b>far</b> ва бошқалар.</p>
+    <p class="small" style="margin:14px 0 0"><a href="index.html">Мижоз платформасига қайтиш</a></p>
+  </div>
+</section>
+
+<main id="adminApp" class="container hidden">
+  <div class="ops-bar">
+    <div>
+      <div class="role"><svg viewBox="0 0 48 48" width="26" height="26" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="var(--gold)" stroke-width="1.4"/><path d="M24 7l13 5v9c0 8.5-5.6 14-13 16-7.4-2-13-7.5-13-16v-9l13-5z" fill="var(--accent)"/><path d="M24 14l2.4 5 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4-3.9-3.8 5.4-.8z" fill="var(--gold)"/></svg><span class="live-dot"></span> <span id="opsRole">Миллий гвардия ходими</span></div>
+      <h1 id="opsTitle">Мониторинг ва бошқарув панели</h1>
+    </div>
+    <div class="filters">
+      <div class="clock" id="clock">--:--:--</div>
+      <select class="input" id="fRegion" style="width:auto;min-width:220px" aria-label="Ҳудуд фильтри"></select>
+      <button class="btn" id="btnNorms"></button>
+      <button class="btn btn-primary" id="btnDemo"></button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+  <div class="pipeline" id="pipeline"></div>
+
+  <div class="card" id="contracts" style="margin-bottom:18px">
+    <div class="card-head">
+      <div>
+        <div class="eyebrow">Шартномалар</div>
+        <h3 style="margin:0">Тўланган, кўриб чиқилмоқда, тасдиқланган ва бошқалар</h3>
+      </div>
+      <a class="btn btn-sm" href="index.html">Мижоз платформаси</a>
+    </div>
+    <p class="small muted" id="qLead" style="margin:0 0 12px">Рўйхат мижоз платформасидаги аризалар билан умумий. Ҳар бир қаторни очиб кўриш, шартномани юклаб олиш ва тегишли ҳудудий масъул органга юбориш мумкин.</p>
+    <div class="seg" id="qSeg" style="margin-bottom:14px"></div>
+    <div class="table-wrap"><table class="tbl"><thead><tr><th>Шартнома</th><th>Тадбир</th><th>Ҳудудий масъул орган</th><th>Ҳолат</th><th>Юборилган</th><th>Амаллар</th></tr></thead><tbody id="qBody"></tbody></table></div>
+  </div>
+
+  <div class="card" id="reestr" style="margin-bottom:18px">
+    <div class="card-head">
+      <div>
+        <div class="eyebrow">Реестр</div>
+        <h3 style="margin:0">Мижозлар ва масъул ижрочилар</h3>
+      </div>
+      <button class="btn btn-primary btn-sm" id="regAdd" type="button"></button>
+    </div>
+    <p class="small muted" id="regLead" style="margin:0 0 12px"></p>
+    <div class="seg" id="regSeg" style="margin-bottom:14px"></div>
+    <input class="input" id="regFind" type="search" placeholder="Мижозни қидириш: ташкилот, масъул, телефон, СТИР" style="margin-bottom:12px">
+    <div class="table-wrap"><table class="tbl"><thead id="regHead"></thead><tbody id="regBody"></tbody></table></div>
+  </div>
+
+  <div class="row2">
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="card-head" style="padding:16px 18px 0"><h3>Тадбирлар харитаси</h3><div class="map-legend" id="mapLegend"></div></div>
+      <div style="padding:12px 18px 18px"><div class="map-box"><div id="opsMap"></div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Жонли лента</h3><span class="chip accent"><span class="live-dot"></span>онлайн</span></div>
+      <div class="feed" id="feed"></div>
+    </div>
+  </div>
+
+  <div class="row3">
+    <div class="card"><div class="card-head"><h3>Кейинги 14 кун: шахсий таркибга талаб</h3></div><div id="chDays"></div><div class="chart-legend" id="chDaysLg"></div></div>
+    <div class="card"><div class="card-head"><h3>Ҳудудлар кесимида</h3></div><div class="hbars" id="chRegions"></div></div>
+    <div class="card"><div class="card-head"><h3>Тадбир турлари</h3></div><div class="hbars" id="chTypes"></div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-head"><h3>Аризалар реестри</h3>
+      <div class="filters"><div class="input-group" style="min-width:240px"><span class="addon addon-l" id="qIc"></span><input class="input" id="q" placeholder="Номи, рақами ёки ташкилот"></div>
+      <select class="input" id="sort" style="width:auto" aria-label="Саралаш"><option value="date">Тадбир санаси бўйича</option><option value="created">Келиб тушган вақт бўйича</option><option value="staff">Ходимлар сони бўйича</option></select></div>
+    </div>
+    <div class="table-wrap"><table class="tbl"><thead><tr><th>Ариза</th><th>Тадбир</th><th>Ҳудуд</th><th>Сана</th><th class="num">Ходим</th><th>Хавф</th><th class="num">Қиймат</th><th>Ҳолат</th></tr></thead><tbody id="tbody"></tbody></table></div>
+  </div>
+</main>
+<footer id="app-footer"></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="assets/js/calc.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/remote.js"></script>
+<script src="assets/js/geo.js"></script>
+<script src="assets/js/contract.js"></script>
+<script src="assets/js/payments.js"></script>
+<script src="assets/js/monitoring.js"></script>
+</body>
+</html>

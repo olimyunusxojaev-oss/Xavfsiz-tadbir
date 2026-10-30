@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="uz-Cyrl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Хавфсиз тадбир — бош портал</title>
+<meta name="description" content="Миллий гвардия тизими учун хусусий сектор билан шартнома асосида жамоат хавфсизлигини таъминлаш хизматининг ягона интерактив электрон платформаси">
+<script>try{var t=JSON.parse(localStorage.getItem('hx.theme')||'null');document.documentElement.setAttribute('data-theme',t||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'))}catch(e){document.documentElement.setAttribute('data-theme','dark')}</script>
+<link rel="icon" href="assets/img/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/img/milliy-gvardiya.png">
+<meta name="theme-color" content="#7d0e0e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/i18n-dict.js"></script>
+<script>HXI18N.start()</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap&subset=cyrillic,cyrillic-ext" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
+<link rel="stylesheet" href="assets/css/skin.css">
+<style>
+  /* ---------- Hero ---------- */
+  .hero { position: relative; min-height: calc(100vh - 68px); display: flex; align-items: center; overflow: hidden; padding: 60px 0 90px; }
+  #heroCanvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+  .hero::after { content: ""; position: absolute; inset: auto 0 0 0; height: 160px; background: linear-gradient(transparent, var(--bg)); z-index: 0; pointer-events: none; }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; position: relative; z-index: 1; }
+  .hero h1 .grad { background: linear-gradient(120deg, var(--accent), var(--blue), var(--gold), var(--accent)); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: gradientMove 8s ease infinite; }
+  .hero .lead { font-size: 18px; max-width: 620px; margin: 18px 0 30px; }
+  .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .typed { border-right: 2px solid var(--accent); padding-right: 3px; animation: blink 1s step-end infinite; white-space: nowrap; }
+  .hero-card { background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--line-strong); border-radius: 22px; padding: 22px; box-shadow: var(--shadow); animation: float 6s ease-in-out infinite; }
+  .hero-card .hc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; }
+  .hc-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14px; color: var(--text-2); }
+  .hc-row b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .hc-total { margin-top: 14px; display: flex; align-items: center; gap: 14px; }
+  .hc-total .num { font-family: var(--font-display); font-size: 48px; font-weight: 800; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .scroll-hint { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 2; color: var(--muted); font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .scroll-hint i { width: 22px; height: 36px; border: 2px solid var(--line-strong); border-radius: 12px; position: relative; }
+  .scroll-hint i::after { content: ""; position: absolute; left: 50%; top: 6px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--accent); animation: wheel 1.6s infinite; }
+  @keyframes wheel { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(12px); } }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } .hero { min-height: auto; } .scroll-hint { display: none; } }
+
+  /* ---------- Stats ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: -40px; position: relative; z-index: 2; }
+  .stat { text-align: left; }
+  .stat .v { font-family: var(--font-display); font-size: 34px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+  .stat .l { font-size: 13px; color: var(--muted); }
+  .stat .ic { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 10px; }
+  .stat .ic svg { width: 21px; height: 21px; }
+  @media (max-width: 900px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* ---------- Directions ---------- */
+  .dir-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .dir { overflow: hidden; }
+  .dir .num { position: absolute; right: 16px; top: 8px; font-family: var(--font-display); font-size: 54px; font-weight: 800; color: var(--line); line-height: 1; }
+  .dir .ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); margin-bottom: 16px; transition: transform .4s var(--ease); }
+  .dir:hover .ic { transform: rotate(-8deg) scale(1.08); }
+  .dir .ic svg { width: 24px; height: 24px; }
+  .dir p { font-size: 14px; margin-bottom: 12px; }
+  .dir .ref { font-size: 12px; color: var(--muted); display: flex; gap: 6px; flex-wrap: wrap; }
+  @media (max-width: 900px) { .dir-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .dir-grid { grid-template-columns: minmax(0, 1fr); } }
+
+  /* ---------- Steps ---------- */
+  .steps { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 14px; }
+  .steps::before { content: ""; position: absolute; top: 31px; left: 8%; right: 8%; height: 2px; background: var(--line-strong); }
+  .steps .prog { position: absolute; top: 31px; left: 8%; height: 2px; width: 0; background: linear-gradient(90deg, var(--accent), var(--blue)); transition: width 2.4s var(--ease); }
+  .steps.in .prog { width: 84%; }
+  .step { text-align: center; position: relative; }
+  .step .dot { width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px; display: grid; place-items: center; background: var(--surface); border: 2px solid var(--line-strong); color: var(--text-2); position: relative; z-index: 1; transition: all .5s var(--ease); transition-delay: var(--d); }
+  .step .dot svg { width: 26px; height: 26px; }
+  .steps.in .step .dot { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft); }
+  .step h4 { font-size: 15px; margin-bottom: 6px; }
+  .step p { font-size: 13px; }
+  @media (max-width: 900px) { .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; } .steps::before, .steps .prog { display: none; } }
+
+  /* ---------- Quick calc ---------- */
+  .qc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 22px; align-items: stretch; }
+  .qc-out { display: flex; flex-direction: column; gap: 16px; }
+  .range-row { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .range-row .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .range-row .top b { font-family: var(--font-display); font-size: 20px; color: var(--text); font-variant-numeric: tabular-nums; }
+  .bars { display: flex; flex-direction: column; gap: 9px; }
+  .bar-row { display: grid; grid-template-columns: 170px 1fr 52px; gap: 10px; align-items: center; font-size: 13px; color: var(--text-2); }
+  .bar-row .track { height: 10px; border-radius: 6px; background: var(--surface-3); overflow: hidden; }
+  .bar-row .fill { height: 100%; border-radius: 6px; width: 0; transition: width .7s var(--ease); }
+  .bar-row b { text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+  @media (max-width: 900px) { .qc { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 520px) { .bar-row { grid-template-columns: 110px 1fr 44px; } }
+
+  /* ---------- Services marquee ---------- */
+  .marquee { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); padding: 6px 0; }
+  .marquee-track { display: flex; gap: 14px; width: max-content; animation: ticker 40s linear infinite; }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+  .svc { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-radius: 40px; background: var(--surface); border: 1px solid var(--line); white-space: nowrap; font-weight: 600; font-size: 14px; }
+  .svc svg { width: 18px; height: 18px; color: var(--accent); }
+
+  /* ---------- Modules ---------- */
+  .mods { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .mod { display: flex; flex-direction: column; gap: 10px; text-decoration: none !important; color: var(--text); overflow: hidden; }
+  .mod .ic { width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center; color: #fff; }
+  .mod .ic svg { width: 26px; height: 26px; }
+  .mod p { font-size: 13.5px; margin: 0; flex: 1; }
+  .mod .go { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--accent); }
+  .mod .go svg { width: 16px; height: 16px; transition: transform .3s var(--ease); }
+  .mod:hover .go svg { transform: translateX(5px); }
+  @media (max-width: 1000px) { .mods { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .mods { grid-template-columns: minmax(0, 1fr); } }
+
+  .cta-band { border-radius: 26px; padding: 44px; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 22%, var(--surface)), color-mix(in srgb, var(--blue) 22%, var(--surface))); border: 1px solid var(--line-strong); display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; position: relative; overflow: hidden; }
+  .cta-band::before { content: ""; position: absolute; width: 380px; height: 380px; right: -100px; top: -160px; border-radius: 50%; border: 50px solid color-mix(in srgb, var(--accent) 14%, transparent); animation: float 7s ease-in-out infinite; }
+  .cta-band h2 { margin: 0 0 6px; }
+  .cta-band p { margin: 0; }
+
+  /* ---------- 2-версия: янги бўлимлар ---------- */
+  .hero::before { content: ""; position: absolute; inset: -20% -10% auto -10%; height: 90%; z-index: 0; pointer-events: none; background: radial-gradient(40% 50% at 20% 30%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%), radial-gradient(35% 45% at 80% 20%, color-mix(in srgb, var(--blue) 22%, transparent), transparent 70%), radial-gradient(30% 40% at 60% 80%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 70%); filter: blur(10px); animation: aurora 16s ease-in-out infinite alternate; }
+  @keyframes aurora { from { transform: translate3d(-2%, 0, 0) scale(1); } to { transform: translate3d(3%, 4%, 0) scale(1.08); } }
+  .band { background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--surface-2) 70%, transparent) 12%, color-mix(in srgb, var(--surface-2) 70%, transparent) 88%, transparent); }
+  .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+  @media (max-width: 960px) { .two-col { grid-template-columns: minmax(0, 1fr); } }
+  .news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 960px) { .news-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .news-grid { grid-template-columns: minmax(0, 1fr); } }
+  .news-card { display: flex; flex-direction: column; gap: 10px; overflow: hidden; padding: 0; }
+  .news-card .cover { height: 92px; position: relative; display: flex; align-items: flex-end; padding: 12px 16px; color: #fff; }
+  .news-card .cover.photo { height: 176px; padding: 0; display: block; overflow: hidden; background: linear-gradient(135deg, #7d0e0e, #1c5cab); }
+  .news-card .cover.photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .news-card .cover.photo .date { position: absolute; left: 12px; bottom: 12px; }
+  .mg-about { display: grid; grid-template-columns: 108px minmax(0, 1fr); gap: 22px; align-items: center; }
+  .mg-about .emb-lg { width: 108px; height: 108px; object-fit: contain; }
+  .mg-about h2 { margin: 4px 0 8px; }
+  .mg-about p { margin: 0 0 14px; }
+  @media (max-width: 640px) { .mg-about { grid-template-columns: minmax(0, 1fr); } .mg-about .emb-lg { width: 72px; height: 72px; } }
+  .news-card .cover svg.big { position: absolute; right: 10px; top: 8px; width: 74px; height: 74px; opacity: .28; }
+  .news-card .cover .date { font: 800 13px var(--font-display); background: rgba(0, 0, 0, .28); padding: 3px 9px; border-radius: 8px; position: relative; }
+  .news-card .body { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .news-card h4 { margin: 0; font-size: 16px; line-height: 1.35; }
+  .news-card p { margin: 0; font-size: 13.5px; flex: 1; }
+  .news-card .more { font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+  .news-card .more svg { width: 15px; height: 15px; }
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .ck { display: grid; grid-template-columns: 26px 1fr; gap: 10px; align-items: start; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); cursor: pointer; transition: all .25s var(--ease); }
+  .ck:hover { border-color: var(--line-strong); }
+  .ck .box { width: 24px; height: 24px; border-radius: 7px; border: 2px solid var(--line-strong); display: grid; place-items: center; color: transparent; transition: all .25s var(--ease); }
+  .ck .box svg { width: 15px; height: 15px; }
+  .ck.on { background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+  .ck.on .box { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); transform: scale(1.06); }
+  .ck b { display: block; color: var(--text); font-size: 14px; }
+  .ck.on b { text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+  .ck span { font-size: 12.5px; color: var(--muted); }
+  .ring { width: 64px; height: 64px; position: relative; flex: none; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring b { position: absolute; inset: 0; display: grid; place-items: center; font: 800 15px var(--font-display); color: var(--text); }
+  .ban-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 600px) { .ban-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .ban { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; padding: 12px 6px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); font-size: 12px; font-weight: 600; color: var(--text-2); transition: transform .25s var(--ease); }
+  .ban:hover { transform: translateY(-3px); }
+  .ban .pic { width: 58px; height: 58px; position: relative; }
+  .ban .pic svg { width: 100%; height: 100%; }
+  .zones-layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: center; }
+  @media (max-width: 960px) { .zones-layout { grid-template-columns: minmax(0, 1fr); } }
+  .zones-layout .zones-wrap { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 10px; box-shadow: var(--shadow-sm); }
+  .tips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 600px) { .tips { grid-template-columns: minmax(0, 1fr); } }
+  .tip { display: flex; gap: 10px; align-items: flex-start; padding: 12px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--line); font-size: 13.5px; color: var(--text-2); }
+  .tip .ti { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex: none; background: var(--blue-soft); color: var(--blue); }
+  .tip .ti svg { width: 18px; height: 18px; }
+  .tip b { display: block; color: var(--text); font-size: 14px; margin-bottom: 2px; }
+  .sos-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .sos-n { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--line); text-decoration: none !important; color: var(--text); transition: transform .2s var(--ease); }
+  .sos-n:hover { transform: translateY(-2px); }
+  .sos-n b { font: 800 30px var(--font-display); line-height: 1; min-width: 64px; }
+  .sos-n span { font-size: 13px; color: var(--text-2); font-weight: 600; }
+  .faq { max-width: 860px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+  .faq details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 0 18px; transition: border-color .2s; }
+  .faq details[open] { border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+  .faq summary { list-style: none; cursor: pointer; padding: 16px 0; font-weight: 700; display: flex; justify-content: space-between; gap: 12px; align-items: center; color: var(--text); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font: 400 24px var(--font); color: var(--accent); transition: transform .3s var(--ease); }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { margin: 0 0 16px; font-size: 14.5px; animation: fadeUp .35s var(--ease); }
+</style>
+</head>
+<body>
+<header id="app-header"></header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="container hero-grid">
+      <div>
+        <div class="org-id reveal"><span class="emb"><img src="assets/img/milliy-gvardiya.png" alt="Миллий гвардия эмблемаси"></span><span class="txt"><small>Ўзбекистон Республикаси</small><b>Миллий гвардияси</b></span></div>
+        <div class="hero-tags reveal">
+          <span class="chip accent"><span class="live-dot"></span> Платформа ишламоқда</span>
+        </div>
+        <h1 class="reveal" style="--d:.08s">Оммавий тадбирлар учун <span class="grad">жамоат хавфсизлиги</span> — бир платформада</h1>
+        <p class="lead reveal" style="--d:.16s">Миллий гвардия тизими учун хусусий сектор билан <b>шартнома асосида</b> хавфсизлик хизматини ташкил этиш: ариза, периметр ва майдон бўйича <span class="typed" id="typed">ходимлар сонини автоматик ҳисоблаш</span></p>
+        <div class="hero-cta reveal" style="--d:.24s">
+          <a class="btn btn-primary btn-lg" href="kabinet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Ариза бериш</a>
+          <a class="btn btn-lg" href="xarita.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg>Харитада ҳисоблаш</a>
+        </div>
+      </div>
+      <div class="reveal from-right" style="--d:.3s">
+        <div class="hero-card" id="heroCard">
+          <div class="hc-top"><b>Тезкор ҳисоб намунаси</b><span class="chip blue" id="hcType">Концерт</span></div>
+          <div class="hc-row"><span>Периметр</span><b id="hcP">—</b></div>
+          <div class="hc-row"><span>Майдон</span><b id="hcS">—</b></div>
+          <div class="hc-row"><span>Ўртача сиғим</span><b id="hcC">—</b></div>
+          <div class="hc-row"><span>Хавф коэффициенти</span><b id="hcK">—</b></div>
+          <div class="hc-total"><div class="num" id="hcN">0</div><div><b>нафар ходим</b><br><span class="small muted" id="hcCost">—</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint"><i></i>пастга</div>
+  </section>
+
+  <!-- STATS -->
+  <section class="container">
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <!-- MILLIY GVARDIYA -->
+  <section class="section" style="padding-top:28px">
+    <div class="container">
+      <div class="card mg-about reveal">
+        <img class="emb-lg" src="assets/img/milliy-gvardiya.png" alt="Ўзбекистон Республикаси Миллий гвардияси эмблемаси">
+        <div>
+          <div class="eyebrow">Расмий манба</div>
+          <h2>Ўзбекистон Республикаси Миллий гвардияси</h2>
+          <p>Миллий гвардия — давлат ҳарбий тузилмаси. У жамоат хавфсизлиги ва жамоат тартибини таъминлашда, шу жумладан оммавий тадбирларда, иштирок этади. Ҳудудий бўлинмалар шартнома асосидаги хавфсизлик хизматини ташкил этади. Расмий ахборот, янгиликлар ва мурожаатлар қуйидаги сайтда чоп этилади.</p>
+          <a class="btn btn-primary" href="https://milliygvardiya.uz/oz" target="_blank" rel="noopener">https://milliygvardiya.uz/oz</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section class="section" style="padding-top:20px">
+    <div class="container">
+      <div class="section-head center reveal">
+        <div class="eyebrow">Жараён</div>
+        <h2>Аризадан хизматгача — 6 босқич</h2>
+        <p>Барча босқичлар электрон шаклда, ҳолат ўзгариши ҳақида буюртмачи дарҳол хабардор қилинади.</p>
+      </div>
+      <div class="steps" id="steps"><div class="prog"></div></div>
+    </div>
+  </section>
+
+  <!-- QUICK CALC -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">Интерактив ҳисоб</div>
+        <h2>Периметр ва майдонни ўзгартиринг — ходимлар сони дарҳол ҳисобланади</h2>
+        <p>Бу тезкор намуна. Аниқ ҳисоб учун периметрни харитада чизинг ёки шахсий кабинетда ариза тўлдиринг.</p>
+      </div>
+      <div class="qc">
+        <div class="card reveal from-left">
+          <div class="field" style="margin-bottom:16px">
+            <label for="qcType">Тадбир тури</label>
+            <select class="input" id="qcType"></select>
+          </div>
+          <div class="field" style="margin-bottom:16px">
+            <label for="qcVenue">Объект тури</label>
+            <select class="input" id="qcVenue"></select>
+          </div>
+          <div class="range-row"><div class="top"><span class="label">Периметр</span><b id="qcPv">800 м</b></div><input type="range" id="qcP" min="100" max="6000" step="20" value="800" aria-label="Периметр"></div>
+          <div class="range-row"><div class="top"><span class="label">Майдон</span><b id="qcSv">40 000 м²</b></div><input type="range" id="qcS" min="1000" max="250000" step="500" value="40000" aria-label="Майдон"></div>
+          <div class="range-row"><div class="top"><span class="label">Давомийлик</span><b id="qcDv">5 соат</b></div><input type="range" id="qcD" min="1" max="24" step="1" value="5" aria-label="Давомийлик"></div>
+          <div class="range-row"><div class="top"><span class="label">Кириш нуқталари (НЎП)</span><b id="qcEv">4</b></div><input type="range" id="qcE" min="1" max="20" step="1" value="4" aria-label="Кириш нуқталари"></div>
+          <div id="qcWarn" class="warn-list"></div>
+        </div>
+        <div class="card glow qc-out reveal from-right">
+          <div class="card-head"><h3>Натижа</h3><span id="qcRisk"></span></div>
+          <div class="big-total"><b id="qcTotal">0</b><span>нафар ходим жалб этилади</span></div>
+          <div class="bars" id="qcBars"></div>
+          <div class="grid-3" style="gap:10px">
+            <div class="tech"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.5 3-5.5 6.5-5.5s6.5 2 6.5 5.5"/></svg></div><div><b id="qcCap">0</b><span>сиғим, киши</span></div></div>
+            <div class="tech"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><b id="qcPH">0</b><span>киши-соат</span></div></div>
+            <div class="tech"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg></div><div><b id="qcCost">0</b><span>млн сўм (тахм.)</span></div></div>
+          </div>
+          <a class="btn btn-primary" href="kabinet.html" id="qcGo">Шу параметрлар билан ариза бошлаш →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZONES (infographic) -->
+  <section class="section band">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">Иллюстрация</div>
+        <h2>Тадбир хавфсизлиги қандай ташкил этилади?</h2>
+        <p>Кучлар ҳудуд бўйлаб зоналарга тақсимланади. Изоҳ устига олиб боринг — схемадаги тегишли зона ажралиб кўринади. Патруль нарядлари ўз секторлари бўйлаб ҳаракатланади.</p>
+      </div>
+      <div class="zones-layout reveal zoom" id="zonesHome"></div>
+    </div>
+  </section>
+
+  <!-- DIRECTIONS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">Ҳуқуқий асос</div>
+        <h2>Амалдаги қонунчиликдан келиб чиқадиган асосий йўналишлар</h2>
+        <p>Платформа функциялари қуйидаги норматив-ҳуқуқий ҳужжатлар талабларига асосланган. Ҳар бир йўналиш бўйича батафсил маълумот «Ҳуқуқий база» бўлимида.</p>
+      </div>
+      <div class="dir-grid" id="dirs"></div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST + PROHIBITED -->
+  <section class="section">
+    <div class="container two-col">
+      <div class="card reveal from-left">
+        <div class="card-head"><div><div class="eyebrow">Ташкилотчи учун</div><h3 style="margin:0">Тадбирга тайёргарлик чек-листи</h3></div><div class="ring" id="ckRing"></div></div>
+        <div class="checklist" id="checklist"></div>
+      </div>
+      <div class="card reveal from-right">
+        <div class="eyebrow">Иштирокчилар учун</div><h3>Тадбирга олиб кириш тақиқланган буюмлар</h3>
+        <div class="ban-grid" id="banGrid"></div>
+        <p class="small muted" style="margin:12px 0 0">Тўлиқ рўйхат — ВМ-205, 59-банд ва тадбир ташкилотчисининг қоидаларида. Кириш нуқталарида металлодетектор назорати ўтказилади (61-банд).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIPS + EMERGENCY -->
+  <section class="section">
+    <div class="container two-col">
+      <div class="card reveal from-left">
+        <div class="eyebrow">Эслатма</div><h3>Иштирокчиларга маслаҳатлар</h3>
+        <div class="tips" id="tips"></div>
+      </div>
+      <div class="card reveal from-right sos">
+        <div class="eyebrow">Фавқулодда ҳолатларда</div><h3>Тезкор хизматлар рақамлари</h3>
+        <div class="sos-grid" id="sos"></div>
+        <p class="small muted" style="margin:12px 0 0">Тадбир ҳудудида энг яқин хизматчига ёки НЎПга мурожаат қилинг — хизматчи ўзини таништириши шарт.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section" style="padding:30px 0">
+    <div class="marquee"><div class="marquee-track" id="svc"></div></div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section band">
+    <div class="container">
+      <div class="section-head center reveal"><div class="eyebrow">Саволлар ва жавоблар</div><h2>Кўп бериладиган саволлар</h2></div>
+      <div class="faq" id="faq"></div>
+    </div>
+  </section>
+
+  <!-- NEWS -->
+  <section class="section band">
+    <div class="container">
+      <div class="section-head reveal" style="display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;max-width:none">
+        <div><div class="eyebrow">milliygvardiya.uz</div><h2>Расмий сайт янгиликлари</h2><p style="margin:6px 0 0">Янгиликлар <a href="https://milliygvardiya.uz/oz" target="_blank" rel="noopener">https://milliygvardiya.uz/oz</a> саҳифасидан расмлари билан олинади. <span id="newsStatus" class="muted"></span></p></div>
+        <a class="btn" href="https://milliygvardiya.uz/oz" target="_blank" rel="noopener">Сайтга ўтиш</a>
+      </div>
+      <div class="news-grid" id="news"></div>
+    </div>
+  </section>
+</main>
+
+<footer id="app-footer"></footer>
+
+<script src="assets/js/calc.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/remote.js"></script>
+<script src="assets/js/illustrations.js"></script>
+<script src="assets/js/portal.js"></script>
+</body>
+</html>
