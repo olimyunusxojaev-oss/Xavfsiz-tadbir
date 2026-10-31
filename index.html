@@ -40,7 +40,7 @@
   .scroll-hint i { width: 22px; height: 36px; border: 2px solid var(--line-strong); border-radius: 12px; position: relative; }
   .scroll-hint i::after { content: ""; position: absolute; left: 50%; top: 6px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--accent); animation: wheel 1.6s infinite; }
   @keyframes wheel { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(12px); } }
-  @media (max-width: 960px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } .hero { min-height: auto; } .scroll-hint { display: none; } }
+  @media (max-width: 960px) { .hero-grid { grid-template-columns: minmax(0, 1fr); } .hero { min-height: auto; padding: 28px 0 36px; } .scroll-hint { display: none; } .hero .lead { font-size: 16px; } .typed { white-space: normal; } .hero h1 .grad { animation: none; background: none; color: var(--accent); -webkit-text-fill-color: var(--accent); } .hero-cta { flex-direction: column; } .hero-cta .btn { width: 100%; white-space: normal; } .hc-total .num { font-size: 36px; } .stats { margin-top: 8px; } .cta-band { padding: 22px; } }
 
   /* ---------- Stats ---------- */
   .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: -40px; position: relative; z-index: 2; }
@@ -196,7 +196,7 @@
         <div class="hero-tags reveal">
           <span class="chip accent"><span class="live-dot"></span> Платформа ишламоқда</span>
         </div>
-        <h1 class="reveal" style="--d:.08s">Оммавий тадбирларда <span class="grad">жамоат хавфсизлигини таъминлаш</span> — бир платформада</h1>
+        <h1 class="reveal" style="--d:.08s">Оммавий тадбирлар учун <span class="grad">жамоат хавфсизлиги</span> — бир платформада</h1>
         <p class="lead reveal" style="--d:.16s">Миллий гвардия тизими учун хусусий сектор билан <b>шартнома асосида</b> хавфсизлик хизматини ташкил этиш: ариза, периметр ва майдон бўйича <span class="typed" id="typed">ходимлар сонини автоматик ҳисоблаш</span></p>
         <div class="hero-cta reveal" style="--d:.24s">
           <a class="btn btn-primary btn-lg" href="kabinet.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Ариза бериш</a>
@@ -230,7 +230,7 @@
         <div>
           <div class="eyebrow">Расмий манба</div>
           <h2>Ўзбекистон Республикаси Миллий гвардияси</h2>
-          <p>Миллий гвардия — давлат ҳарбий тузилмаси. У жамоат хавфсизлиги ва жамоат тартибини таъминлашда, шу жумладан оммавий тадбирларда, иштирок этади. Ҳудудий бўлинмалар шартнома асосидаги хавфсизлик хизматини ташкил этади. Расмий ахборот, янгиликлар ва мурожаатлар қуйидаги сайтда чоп этилади.</p>
+          <p>Миллий гвардия жамоат хавфсизлиги ва жамоат тартибини таъминлашда, шу жумладан оммавий тадбирларда, иштирок этади. Ҳудудий бўлинмалар шартнома асосидаги хавфсизлик хизматини ташкил этади. Расмий ахборот, янгиликлар ва мурожаатлар қуйидаги сайтда чоп этилади.</p>
           <a class="btn btn-primary" href="https://milliygvardiya.uz/oz" target="_blank" rel="noopener">https://milliygvardiya.uz/oz</a>
         </div>
       </div>
