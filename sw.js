@@ -1,6 +1,6 @@
 /* Офлайн иш учун оддий service worker: саҳифа ва ресурслар кэшланади,
    янги версия тармоқдан олинади (network-first), тармоқ бўлмаса кэшдан. */
-const CACHE = 'xavfsiz-tadbir-v10';
+const CACHE = 'xavfsiz-tadbir-v11';
 const SHELL = [
   'index.html', 'kabinet.html', 'xarita.html', 'admin.html', 'monitoring.html', 'qonunchilik.html',
   'assets/img/milliy-gvardiya.png', 'assets/img/favicon.png',
