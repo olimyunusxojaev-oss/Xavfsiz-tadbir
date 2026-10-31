@@ -37,7 +37,8 @@
   .divider { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12px; margin: 18px 0; }
   .divider::before, .divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
   .auth-step { animation: fadeUp .45s var(--ease); }
-  @media (max-width: 900px) { .auth { grid-template-columns: minmax(0, 1fr); } .auth-art { min-height: auto; } .auth-art svg.big { max-width: 200px; } }
+  @media (max-width: 900px) { .auth { grid-template-columns: minmax(0, 1fr); padding: 16px 0; } .auth-art { min-height: auto; padding: 20px; } .auth-art svg.big { max-width: 200px; } .auth-card { padding: 18px; } }
+  @media (max-width: 420px) { .otp { gap: 6px; } .otp input { width: 42px; height: 48px; font-size: 20px; } }
 
   /* ---------- Cabinet layout ---------- */
   .cab { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 22px; padding: 26px 20px 10px; align-items: start; }
