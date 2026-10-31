@@ -709,7 +709,7 @@
       }
       if (!self.drawing) return;
       const p = [e.latlng.lat, e.latlng.lng], v = self.verts;
-      if (self.kind !== 'route' && v.length >= 3) { const a = m.latLngToContainerPoint(v[0]), b = m.latLngToContainerPoint(e.latlng); if (a.distanceTo(b) < 14) { self.finish(); return; } }
+      if (self.kind !== 'route' && v.length >= 3) { const a = m.latLngToContainerPoint(v[0]), b = m.latLngToContainerPoint(e.latlng); const near = window.matchMedia('(pointer: coarse)').matches ? 36 : 16; if (a.distanceTo(b) < near) { self.finish(); return; } }
       if (v.length) { const a = m.latLngToContainerPoint(v[v.length - 1]), b = m.latLngToContainerPoint(e.latlng); if (a.distanceTo(b) < 6) return; }
       v.push(p); self._drawTemp();
     };
@@ -750,8 +750,10 @@
     if (pts.length >= 2) L.polyline(pts, { color: acc, weight: this.kind === 'route' ? 5 : 3, dashArray: '8 6', lineCap: 'round' }).addTo(this.shape);
     if (this.kind !== 'route' && pts.length >= 3) L.polygon(pts, { stroke: false, fillColor: acc, fillOpacity: 0.12 }).addTo(this.shape);
     const self = this;
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
     v.forEach(function (p, i) {
-      L.marker(p, { icon: div('mk-vertex' + (i === 0 ? ' first' : ''), '', i === 0 ? [18, 18] : [14, 14]), interactive: i === 0 && self.kind !== 'route' }).addTo(self.handles)
+      const sz = coarse ? (i === 0 ? [34, 34] : [30, 30]) : (i === 0 ? [18, 18] : [14, 14]);
+      L.marker(p, { icon: div('mk-vertex' + (i === 0 ? ' first' : ''), '', sz), interactive: i === 0 && self.kind !== 'route' }).addTo(self.handles)
         .on('click', function (e) { if (self.kind !== 'route' && i === 0 && self.verts.length >= 3) { L.DomEvent.stop(e); self.finish(); } });
     });
     this._mode('drawing');
@@ -766,6 +768,7 @@
     this.gates = [];
     if (this.kind === 'route') this.setRoute(this.verts.slice(), { fit: false });
     else this.setPolygon(this.verts.slice(), { fit: false });
+    this._fitDrawn(false);
     this._mode('done');
   };
   PerimeterMap.prototype.setKind = function (kind) {
@@ -787,7 +790,7 @@
     this._userClearedGates = true;
     this.roads = null;
     this._renderShape();
-    if (o.fit !== false && this.latlngs.length) this.map.fitBounds(L.latLngBounds(this.latlngs).pad(0.35), { animate: !o.instant, maxZoom: 18 });
+    if (o.fit !== false && this.latlngs.length) this._fitDrawn(!!o.instant);
     if (!o.silent) this._emit('shape');
   };
   PerimeterMap.prototype.sampleRoute = function () {
@@ -819,7 +822,7 @@
     }
     this._gatesMoved = !!(o.gates && o.gates.length);
     this._renderShape();
-    if (o.fit !== false && this.latlngs.length) this.map.fitBounds(L.latLngBounds(this.latlngs).pad(0.28), { animate: !o.instant, maxZoom: 18 });
+    if (o.fit !== false && this.latlngs.length) this._fitDrawn(!!o.instant);
     this._loadRoads();
     if (!o.silent) this._emit('shape');
   };
@@ -1372,6 +1375,13 @@
     return { posts: postPts.length, cps: gates.length, patrols: units, sectors: secs.length, gateSource: gateSrc };
   };
 
+  PerimeterMap.prototype._fitDrawn = function (instant) {
+    if (!this.map || !this.latlngs || this.latlngs.length < 2) return;
+    const narrow = window.matchMedia('(max-width: 900px)').matches;
+    this.map.fitBounds(L.latLngBounds(this.latlngs), narrow
+      ? { paddingTopLeft: [18, 96], paddingBottomRight: [18, 88], maxZoom: 18, animate: !instant }
+      : { padding: [48, 48], maxZoom: 18, animate: !instant });
+  };
   PerimeterMap.prototype.invalidate = function () { const m = this.map; setTimeout(function () { m.invalidateSize(); }, 60); };
   PerimeterMap.prototype.destroy = function () {
     if (this._anim) cancelAnimationFrame(this._anim);
