@@ -28,7 +28,7 @@
   .filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 18px; }
   @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (max-width: 640px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); } .hb { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; } .ops-bar { padding: 16px 0 10px; } .filters { width: 100%; } .filters .input { width: 100% !important; min-width: 0 !important; } .gate { margin: 20px auto 40px; } }
   .row2 { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 18px; margin-bottom: 18px; }
   .row3 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr); gap: 18px; margin-bottom: 18px; }
   @media (max-width: 1100px) { .row2, .row3 { grid-template-columns: minmax(0, 1fr); } }
@@ -89,12 +89,12 @@
 <section id="adminGate" class="container">
   <div class="card gate">
     <div class="org-id"><span class="emb"><img src="assets/img/milliy-gvardiya.png" alt=""></span><span class="txt"><small>Админ платформаси</small><b>Миллий гвардия ходими</b></span></div>
-    <h1>Ходим кириши</h1>
-    <p>Марказий аппарат мижоз ва ижрочиларни қўшади ҳамда шартнома юборади. Вилоят ижрочиси ўз ҳудудининг шахсий кабинетига киради.</p>
+    <h1>Тизимга кириш</h1>
+    <p>Миллий гвардия тизимига киринг. Марказ ва ҳудудий бўлинмалар аризалар, шартномалар ва реестрни шу ердан бошқаради.</p>
     <div class="field"><label for="admLogin">Логин</label><input class="input" id="admLogin" autocomplete="username" placeholder="tsh"></div>
     <div class="field"><label for="admPass">Парол</label><input class="input" id="admPass" type="password" autocomplete="current-password" placeholder="парол"></div>
     <button class="btn btn-primary" id="admIn" type="button">Кириш</button>
-    <p class="small muted" style="margin:14px 0 0">Демо парол: <b>mg2026</b>. Марказ — логин <b>markaz</b>. Ҳудуд — логин вилоят коди: <b>tsh</b>, <b>sam</b>, <b>and</b>, <b>bux</b>, <b>far</b> ва бошқалар.</p>
+    <p class="small muted" style="margin:14px 0 0">Марказий кириш — логин <b>markaz</b>. Ҳудудий кириш — вилоят коди: <b>tsh</b>, <b>sam</b>, <b>and</b>, <b>bux</b>, <b>far</b> ва бошқалар. Парол: <b>mg2026</b>.</p>
     <p class="small" style="margin:14px 0 0"><a href="index.html">Мижоз платформасига қайтиш</a></p>
   </div>
 </section>
