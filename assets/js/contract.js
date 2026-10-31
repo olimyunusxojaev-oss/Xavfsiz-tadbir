@@ -11,7 +11,7 @@
     uz: {
       wm: 'ЛОЙИҲА', title: 'ШАРТНОМА № {no}', draftNo: 'Л-{id}',
       sub: 'оммавий тадбир ўтказилишида фуқаролар хавфсизлигини таъминлаш ва жамоат тартибини сақлаш тўғрисида',
-      exec1: 'Ўзбекистон Республикаси Миллий гвардиясининг {region} бўйича ҳудудий бўлинмаси', exec2: 'Ички ишлар органларининг {region} бўйича ҳудудий бўлинмаси',
+      exec1: 'Ўзбекистон Республикаси Миллий гвардиясининг {region} бўйича ҳудудий бўлинмаси', exec2: 'Ўзбекистон Республикаси Миллий гвардиясининг {region} бўйича ҳудудий бўлинмаси',
       pre: '{exec} (бундан буён матнда «Ижрочи» деб юритилади) бир томондан, ва <b>{org}</b> (бундан буён матнда «Буюртмачи» деб юритилади) {rep}иккинчи томондан, Вазирлар Маҳкамасининг 2014 йил 29 июлдаги 205-сон қарори билан тасдиқланган Оммавий тадбирларни ўтказиш қоидаларининг 15-1-бандига мувофиқ мазкур шартномани қуйидагилар ҳақида туздилар:',
       rep: '{name} номидан, ',
       h1: '1. Шартнома предмети',
@@ -40,7 +40,7 @@
     ru: {
       wm: 'ПРОЕКТ', title: 'ДОГОВОР № {no}', draftNo: 'П-{id}',
       sub: 'об обеспечении безопасности граждан и охране общественного порядка при проведении массового мероприятия',
-      exec1: 'Территориальное подразделение Национальной гвардии Республики Узбекистан ({region})', exec2: 'Территориальное подразделение органов внутренних дел ({region})',
+      exec1: 'Территориальное подразделение Национальной гвардии Республики Узбекистан ({region})', exec2: 'Территориальное подразделение Национальной гвардии Республики Узбекистан ({region})',
       pre: '{exec} (далее — «Исполнитель»), с одной стороны, и <b>{org}</b> (далее — «Заказчик») {rep}с другой стороны, в соответствии с пунктом 15-1 Правил проведения массовых мероприятий, утверждённых постановлением Кабинета Министров от 29 июля 2014 года № 205, заключили настоящий договор о нижеследующем:',
       rep: 'в лице {name}, ',
       h1: '1. Предмет договора',
@@ -69,7 +69,7 @@
     en: {
       wm: 'DRAFT', title: 'CONTRACT No. {no}', draftNo: 'D-{id}',
       sub: 'on ensuring public safety and maintaining public order during a mass event',
-      exec1: 'The territorial unit of the National Guard of the Republic of Uzbekistan for {region}', exec2: 'The territorial internal affairs unit for {region}',
+      exec1: 'The territorial unit of the National Guard of the Republic of Uzbekistan for {region}', exec2: 'The territorial unit of the National Guard of the Republic of Uzbekistan for {region}',
       pre: '{exec} (the “Contractor”), of the one part, and <b>{org}</b> (the “Customer”){rep}, of the other part, pursuant to clause 15-1 of the Rules for Holding Mass Events approved by Cabinet of Ministers Resolution No. 205 of 29 July 2014, have concluded this contract as follows:',
       rep: ', represented by {name}',
       h1: '1. Subject of the contract',
