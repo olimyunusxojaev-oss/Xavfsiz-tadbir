@@ -38,7 +38,7 @@
       const x0 = cols[c], x1 = cols[c + 1], y0 = rows[r], y1 = rows[r + 1];
       sectors += '<rect x="' + x0 + '" y="' + y0 + '" width="' + (x1 - x0) + '" height="' + (y1 - y0) + '" />';
       const ix = x0 + 26, iy = y0 + 22, iw = x1 - x0 - 52, ih = y1 - y0 - 44;
-      const path = 'M' + ix + ',' + iy + ' h' + iw + ' v' + ih + ' h' + (-iw) + ' Z';
+      const path = 'M' + ix + ',' + iy + ' h' + iw + ' v' + ih + ' h' + (-iw) + ' v' + (-ih);
       routes += '<path id="' + id + '-r' + k + '" d="' + path + '" />';
       movers += '<g><use href="#' + id + '-patrol" x="-9" y="-9" width="18" height="18"/><animateMotion dur="' + (9 + k) + 's" repeatCount="indefinite" begin="-' + (k * 1.7) + 's"><mpath href="#' + id + '-r' + k + '"/></animateMotion></g>';
       sectors += '<text class="sub" x="' + (x0 + 8) + '" y="' + (y0 + 16) + '">С-' + (k + 1) + '</text>';
