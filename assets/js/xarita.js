@@ -6,7 +6,7 @@
 (function () {
   'use strict';
   const $ = HX.$, $$ = HX.$$, ic = HX.icon, t = function (s) { return window.HXI18N ? HXI18N.t(s) : s; };
-  let pm, res = null, deployTimer = 0;
+  let pm, res = null, deployTimer = 0, setMapMax = function () {};
   const S = Object.assign({ region: (HX.user.get() || {}).region || 'tsh', type: '', mode: '', picked: false, venue: 'open', category: '1', entrances: 3, startTime: '18:00', duration: 4, attendees: '', crowd: 'limited', factors: [], latlngs: [], gates: [], posts: [], hq: null, term: { kind: 'event', from: '', to: '' } }, HX.store.get('hx.calcState', null) || {});
   if (!Array.isArray(S.gates)) S.gates = [];
   if (!Array.isArray(S.posts)) S.posts = [];
@@ -83,12 +83,30 @@
     applyRouteChrome();
     setupTypeGate();
     setupTerm();
-    const startDraw = function () { if (pm.drawing) pm.cancel(); else pm.startDraw(); };
+    const narrowMap = function () { return window.matchMedia('(max-width: 900px)').matches; };
+    setMapMax = function (on) {
+      document.body.classList.toggle('map-max', !!on && narrowMap());
+      const b = $('#mapMax');
+      if (b) b.innerHTML = ic('map') + ' ' + (document.body.classList.contains('map-max') ? 'Панелга қайтиш' : 'Харитани тўлиқ очиш');
+      setTimeout(function () {
+        if (!pm) return;
+        pm.invalidate();
+        setTimeout(function () {
+          if (pm.latlngs && pm.latlngs.length >= 2 && pm._fitDrawn) pm._fitDrawn(true);
+        }, 180);
+      }, 40);
+    };
+    const startDraw = function () {
+      if (pm.drawing) { pm.cancel(); setMapMax(false); }
+      else { setMapMax(true); pm.startDraw(); }
+    };
+    if ($('#mapMax')) $('#mapMax').onclick = function () { setMapMax(!document.body.classList.contains('map-max')); };
+    if (!S.picked) setMapMax(true);
     $('#tDraw').innerHTML = ic('pen') + $('#tDraw').textContent; $('#tDraw').onclick = startDraw; $('#eDraw').onclick = startDraw;
     $('#tUndo').innerHTML = ic('undo') + $('#tUndo').textContent; $('#tUndo').onclick = function () { pm.undo(); };
     $('#tDone').innerHTML = ic('check') + $('#tDone').textContent; $('#tDone').onclick = function () { pm.finish(); };
     $('#tSample').innerHTML = ic('sparkles') + $('#tSample').textContent;
-    const sample = function () { if (routeType()) pm.sampleRoute(); else pm.sample(200 + Math.round(Math.random() * 160), 130 + Math.round(Math.random() * 90), Math.round(Math.random() * 50) - 25); };
+    const sample = function () { setMapMax(true); if (routeType()) pm.sampleRoute(); else pm.sample(200 + Math.round(Math.random() * 160), 130 + Math.round(Math.random() * 90), Math.round(Math.random() * 50) - 25); };
     $('#tSample').onclick = sample; $('#eSample').onclick = sample;
     $('#tClear').innerHTML = ic('trash') + $('#tClear').textContent;
     $('#tClear').onclick = function () { pm.clear(); S.latlngs = []; S.gates = []; S.posts = []; persist(); $('#emptyMap').classList.remove('hidden'); $('#objCard').classList.add('hidden'); syncEntrances(); update('none'); };
@@ -200,6 +218,7 @@
       persist();
       applyRouteChrome();
       update('none');
+      setMapMax(false);
       HX.toast(HXCalc.MODE_LABELS[activeMode()] || '', typeMeta().label, 'ok', 2200);
     };
     syncOverlays();
