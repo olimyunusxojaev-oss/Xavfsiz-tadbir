@@ -93,7 +93,7 @@
   };
   HX.icons = I;
   HX.icon = function (name, cls) {
-    return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (I[name] || I.info) + '</svg>';
+    return '<svg class="' + (cls || '') + '" viewBox="-2 -2 28 28" overflow="visible" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (I[name] || I.info) + '</svg>';
   };
   HX.logoSrc = 'assets/img/milliy-gvardiya.png';
   HX.logo = function (cls, size) {
@@ -375,7 +375,7 @@
         }).join('') + '</select>' : '') +
         '<button class="icon-btn" id="themeBtn" title="' + (HX.theme.get() === 'dark' ? 'Кундузги режим' : 'Тунги режим') + '" aria-label="Кундузги / тунги режим">' + HX.icon(HX.theme.get() === 'dark' ? 'sun' : 'moon') + '</button>' +
         (HX.isAdminPage()
-          ? (adm ? '<button type="button" class="user-chip" id="admOut" title="Админ платформасидан чиқиш"><span class="av">' + HX.esc(HX.initials(adm.name)) + '</span><span>' + HX.esc(adm.name) + '</span></button>' : '<span class="chip">Ходим</span>')
+          ? (adm ? '<button type="button" class="user-chip" id="admOut" title="Админ платформасидан чиқиш"><span class="av">' + HX.esc(HX.initials(adm.name)) + '</span><span>' + HX.esc(adm.name) + '</span></button>' : '<span class="chip">Тизим</span>')
           : (u ? '<a class="user-chip" href="kabinet.html" title="Шахсий кабинет"><span class="av">' + HX.esc(HX.initials(u.org || u.name)) + '</span><span>' + HX.esc(u.org || u.name) + '</span>' + (unread ? '<span class="badge-num">' + unread + '</span>' : '') + '</a>'
             : '<a class="btn btn-primary btn-sm" href="kabinet.html">' + HX.icon('key') + '<span>Кириш</span></a>')) +
         '<button class="icon-btn burger" id="burgerBtn" aria-label="Меню">' + HX.icon('menu') + '</button>' +
@@ -403,7 +403,7 @@
         '<p class="small">Хусусий сектор билан шартнома асосида оммавий тадбирларда фуқаролар хавфсизлиги ва жамоат тартибини таъминлаш хизматини ташкил этишнинг ягона интерактив электрон платформаси.</p></div>' +
         '<div><h4>Бўлимлар</h4>' + HX.NAV.map(function (n) { return '<a href="' + n.href + '">' + n.label + '</a>'; }).join('') + '</div>' +
         '<div><h4>Ҳуқуқий асос</h4><a href="qonunchilik.html#doc-zrq647">ЎРҚ-647 (Миллий гвардия тўғрисида)</a><a href="qonunchilik.html#doc-vm205">ВМ қарори № 205</a><a href="qonunchilik.html#doc-pf27">Жамоат хавфсизлиги концепцияси</a><a href="qonunchilik.html#doc-zrq537">Давлат-хусусий шериклик</a></div>' +
-        '<div><h4>Ёрдам</h4><a href="qonunchilik.html#metodika">Ҳисоблаш методикаси</a><a href="kabinet.html">Ариза бериш тартиби</a><a href="xarita.html">Периметрни чизиш</a>' + (HX.isAdminPage() ? '<a href="index.html">Мижоз платформаси</a>' : '<a href="admin.html">Ходимлар учун кириш</a>') + '<a href="#" id="resetDemo">Демо маълумотларни тиклаш</a></div>' +
+        '<div><h4>Ёрдам</h4><a href="qonunchilik.html#metodika">Ҳисоблаш методикаси</a><a href="kabinet.html">Ариза бериш тартиби</a><a href="xarita.html">Периметрни чизиш</a>' + (HX.isAdminPage() ? '<a href="index.html">Мижоз платформаси</a>' : '<a href="admin.html">Тизимга кириш</a>') + '<a href="#" id="resetDemo">Демо маълумотларни тиклаш</a></div>' +
         '</div><div class="legal"><span>© ' + new Date().getFullYear() + ' «Хавфсиз тадбир» — платформа прототипи. Ҳисоб-китоблар тавсиявий хусусиятга эга, якуний қарорни ваколатли орган қабул қилади.</span><span>Маълумотлар фақат шу қурилмадаги браузерда сақланади.</span></div></div>';
       const rd = HX.$('#resetDemo');
       if (rd) rd.addEventListener('click', function (e) {
@@ -503,13 +503,20 @@
         if (en.target.dataset.count != null) HX.countUp(en.target, +en.target.dataset.count, { dec: +(en.target.dataset.dec || 0), suffix: en.target.dataset.suffix || '' });
         io.unobserve(en.target);
       });
-    }, { threshold: 0.12 }) : null;
+    }, { threshold: 0.01, rootMargin: '0px 0px 12% 0px' }) : null;
     HX.observe = function (root) {
       HX.$$('.reveal:not(.in), [data-count]', root).forEach(function (el) {
         if (io) io.observe(el); else { el.classList.add('in'); if (el.dataset.count != null) el.textContent = HX.fmt(el.dataset.count); }
       });
     };
     HX.observe(document);
+    setTimeout(function () {
+      HX.$$('.reveal:not(.in)').forEach(function (el) {
+        el.classList.add('in');
+        if (el.dataset.count != null) HX.countUp(el, +el.dataset.count, { dec: +(el.dataset.dec || 0), suffix: el.dataset.suffix || '' });
+        if (io) io.unobserve(el);
+      });
+    }, 900);
     // тугмалардаги тўлқин
     document.addEventListener('pointerdown', function (e) {
       const b = e.target.closest && e.target.closest('.btn');
